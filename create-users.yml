@@ -1,0 +1,19 @@
+version: '2.2'
+
+services:
+  create_users:
+    container_name: create_users
+    image: testdockreg01.corp.coinstar.com:443/elasticsearch:6.5.4
+    command: >
+      bash /usr/share/elasticsearch/create-users.sh
+    user: ${UID:-1000}
+    working_dir: /usr/share/elasticsearch
+    volumes:
+      - ".:/usr/share/elasticsearch"
+    networks:
+      - elkmain
+
+networks:
+  elkmain:
+    external: true
+    name: elkmain

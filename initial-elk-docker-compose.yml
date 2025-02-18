@@ -1,0 +1,21 @@
+version: '2.4'
+services:
+  elasticsearch:
+    image: ${DOCKER_REGISTRY}elasticsearch{{elasticsearch_digest}}
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+    volumes:
+      - "/opt/volumes/elasticsearch:/usr/share/elasticsearch/data"
+  logstash:
+    image: ${DOCKER_REGISTRY}logstash{{logstash_digest}}
+    container_name: logstash
+    ports:
+      - "5901:5901"
+    volumes:
+      - "/opt/volumes/logstash/pipeline/:/usr/share/logstash/pipeline/"
+  kibana:
+    image: ${DOCKER_REGISTRY}kibana{{kibana_digest}}
+    container_name: kibana
+    ports:
+      - "5601:5601"

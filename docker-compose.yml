@@ -1,0 +1,70 @@
+version: '2.4'
+services:
+  elasticsearch:
+    image: ${DOCKER_REGISTRY}elasticsearch{{elasticsearch_digest}}
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=Coinstar.123
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.ssl.certificate_authorities=/usr/share/elasticsearch/config/certificates/ca/ca.crt
+      - xpack.ssl.certificate=/usr/share/elasticsearch/config/certificates/elasticsearch/elasticsearch.crt
+      - xpack.ssl.key=/usr/share/elasticsearch/config/certificates/elasticsearch/elasticsearch.key
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - "/opt/volumes/elasticsearch:/usr/share/elasticsearch/data"
+      - "./certs:/usr/share/elasticsearch/config/certificates"
+    networks:
+      - elkmain
+    healthcheck:
+      test: curl --cacert /usr/share/elasticsearch/config/certificates/ca/ca.crt -s https://localhost:9200 >/dev/null
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      
+  logstash:
+    image: ${DOCKER_REGISTRY}logstash{{logstash_digest}}
+    container_name: logstash
+    restart: always
+    environment:
+      - XPACK_MONITORING_ENABLED=true
+      - XPACK_MONITORING_ELASTICSEARCH_USERNAME=logstash_system
+      - XPACK_MONITORING_ELASTICSEARCH_PASSWORD=Coinstar.123
+      - XPACK_MONITORING_ELASTICSEARCH_URL=https://elasticsearch:9200
+      - XPACK_MONITORING_ELASTICSEARCH_SSL_CA=/usr/share/logstash/config/certificates/ca/ca.crt
+    ports:
+      - "5901:5901"
+    volumes:
+      - "/opt/volumes/logstash/pipeline/:/usr/share/logstash/pipeline/"
+      - "./certs:/usr/share/logstash/config/certificates"
+    networks:
+      - elkmain
+
+  kibana:
+    image: ${DOCKER_REGISTRY}kibana{{kibana_digest}}
+    container_name: kibana
+    restart: always
+    environment:
+      - XPACK_SECURITY_ENABLED=true
+      - ELASTICSEARCH_URL="https://elasticsearch:9200"
+      - ELASTICSEARCH_USERNAME=kibana
+      - ELASTICSEARCH_PASSWORD=Coinstar.123
+      - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=/usr/share/kibana/config/certificates/ca/ca.crt
+    ports:
+      - "5601:5601"
+    volumes:
+      - "./certs:/usr/share/kibana/config/certificates"
+    networks:
+      - elkmain
+
+networks:
+  elkmain:
+    driver: bridge
+    name: elkmain
