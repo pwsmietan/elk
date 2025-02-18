@@ -3,7 +3,7 @@ version: '2.2'
 services:
   create_certs:
     container_name: create_certs
-    image: testdockreg01.corp.coinstar.com:443/elasticsearch:6.5.4
+    image: testdockreg01.corp.scrubbed.com:443/elasticsearch:6.5.4
     command: >
       bash -c '
         if [[ ! -d config/certificates/certs ]]; then

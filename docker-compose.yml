@@ -6,7 +6,7 @@ services:
     restart: always
     environment:
       - discovery.type=single-node
-      - ELASTIC_PASSWORD=Coinstar.123
+      - ELASTIC_PASSWORD=Scrubbed.123
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - xpack.security.enabled=true
       - xpack.security.http.ssl.enabled=true
@@ -36,7 +36,7 @@ services:
     environment:
       - XPACK_MONITORING_ENABLED=true
       - XPACK_MONITORING_ELASTICSEARCH_USERNAME=logstash_system
-      - XPACK_MONITORING_ELASTICSEARCH_PASSWORD=Coinstar.123
+      - XPACK_MONITORING_ELASTICSEARCH_PASSWORD=Scrubbed.123
       - XPACK_MONITORING_ELASTICSEARCH_URL=https://elasticsearch:9200
       - XPACK_MONITORING_ELASTICSEARCH_SSL_CA=/usr/share/logstash/config/certificates/ca/ca.crt
     ports:
@@ -55,7 +55,7 @@ services:
       - XPACK_SECURITY_ENABLED=true
       - ELASTICSEARCH_URL="https://elasticsearch:9200"
       - ELASTICSEARCH_USERNAME=kibana
-      - ELASTICSEARCH_PASSWORD=Coinstar.123
+      - ELASTICSEARCH_PASSWORD=Scrubbed.123
       - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=/usr/share/kibana/config/certificates/ca/ca.crt
     ports:
       - "5601:5601"
